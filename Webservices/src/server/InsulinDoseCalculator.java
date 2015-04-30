@@ -1,5 +1,7 @@
 package server;
 
+import javax.jws.WebService;
+
 /**
  * This interface describes a highly simplified insulin dose calculator.
  * <p>
@@ -21,6 +23,7 @@ package server;
  * @author Henrique Madeira
  * @version 1.1
  */
+
 public interface InsulinDoseCalculator {
     /**
      * Calculates the number of insulin units needed after one meal.

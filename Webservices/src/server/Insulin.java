@@ -11,6 +11,14 @@ public class Insulin implements InsulinDoseCalculator {
 
     @Override
     @WebMethod
+    /**
+     * @param carbohydrateAmount
+     * @param carbohydrateToInsulinRatio
+     * @param preMealBloodSugar
+     * @param targetBloodSugar
+     * @param personalSensitivity
+     * @return the number of units of rapid acting insulin needed after a meal (i.e., bolus insulin replacement dose).
+     */
     public int mealtimeInsulinDose(int carbohydrateAmount, int carbohydrateToInsulinRatio, int preMealBloodSugar, int targetBloodSugar, int personalSensitivity) {
         try {
             int hbloodSugar = (preMealBloodSugar - targetBloodSugar) / personalSensitivity;
@@ -25,6 +33,10 @@ public class Insulin implements InsulinDoseCalculator {
 
     @Override
     @WebMethod
+    /**
+     * @param bodyWeight
+     * @return Background insulin dose
+     */
     public int backgroundInsulinDose(int bodyWeight) {
         try {
             return (int)(bodyWeight * 0.55)/2;
@@ -34,6 +46,13 @@ public class Insulin implements InsulinDoseCalculator {
     }
 
     @Override
+    @WebMethod
+    /**
+     * @param physicalActivityLevel
+     * @param physicalActivitySamples
+     * @param bloodSugarDropSamples
+     * @return the drop in blood sugar resulting from one unit of insulin, in mg/dl.
+     */
     public int personalSensitivityToInsulin(int physicalActivityLevel, int[] physicalActivitySamples, int[] bloodSugarDropSamples) {
         try{
             if ( physicalActivitySamples.length > 10 && physicalActivitySamples.length != bloodSugarDropSamples.length)

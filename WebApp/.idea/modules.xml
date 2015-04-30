@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/InsulinCalculator.iml" filepath="$PROJECT_DIR$/InsulinCalculator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/QCS_webapp.iml" filepath="$PROJECT_DIR$/QCS_webapp.iml" />
     </modules>
   </component>
 </project>

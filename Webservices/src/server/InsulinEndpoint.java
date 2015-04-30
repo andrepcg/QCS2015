@@ -8,8 +8,14 @@ import javax.xml.ws.Endpoint;
 public class InsulinEndpoint {
 
     public static void main(String[] argv) {
+        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
+        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
+        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
+        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
+
         Insulin insulin = new Insulin ();
-        String address = "http://localhost:8081/insulin";
+        String address = "http://localhost:8081/insulin/";
         Endpoint.publish(address, insulin);
+        System.out.println("Webservices online at: " + address);
     }
 }
