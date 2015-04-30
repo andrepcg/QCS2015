@@ -34,10 +34,32 @@ var func = function(client, apiMethodName, args, callback){
 // TODO tem de retornar os resultados individuais de cada endpoint
 var processResults = function(results, callback){
 
+    var availableRes = 0;
+
+    var o = {};
+
     var f = {source: results};
     results.forEach(function(ret){
-
+        if(ret.return !== null) {
+            availableRes++;
+            if(o.hasOwnProperty(ret.return))
+                o[ret.return]++;
+            else
+                o[ret.return] = 1;
+        }
     });
+    var max = 0;
+    var res;
+    for (var key in o) {
+        if (o.hasOwnProperty(key)) {
+            if(o[key] > max){
+                max = o[key];
+                res = key;
+            }
+        }
+    }
+
+    f.result = res;
 
     callback(f);
 };
@@ -79,12 +101,24 @@ Voter.prototype.getBackgroundInsulinDose = function(bodyWeight, cb){
 
 };
 
-Voter.prototype.getMealtimeInsulinDose = function(carbohydrateAmount, carbohydrateToInsulinRatio, preMealBloodSugar, targetBloodSugar, personalSensitivity){
-    callNvoters("mealtimeInsulinDose", {arg0: carbohydrateAmount, arg1: carbohydrateToInsulinRatio, arg2: preMealBloodSugar, arg3: targetBloodSugar, arg4: personalSensitivity});
+Voter.prototype.getMealtimeInsulinDose = function(carbohydrateAmount, carbohydrateToInsulinRatio, preMealBloodSugar, targetBloodSugar, personalSensitivity, cb){
+    this.callNvoters("mealtimeInsulinDose", {arg0: carbohydrateAmount, arg1: carbohydrateToInsulinRatio, arg2: preMealBloodSugar, arg3: targetBloodSugar, arg4: personalSensitivity}, function(err, results){
+        //if(err) console.log( err);
+
+        processResults(results, function(processed){
+            cb(processed);
+        })
+    });
 };
 
-Voter.prototype.getPersonalSensitivityToInsulin = function(physicalActivityLevel, physicalActivitySamples, bloodSugarDropSamples){
-    callNvoters("personalSensitivityToInsulin", {arg0: physicalActivityLevel, arg1: physicalActivitySamples, arg2: bloodSugarDropSamples});
+Voter.prototype.getPersonalSensitivityToInsulin = function(physicalActivityLevel, physicalActivitySamples, bloodSugarDropSamples, cb){
+    this.callNvoters("personalSensitivityToInsulin", {arg0: physicalActivityLevel, arg1: physicalActivitySamples, arg2: bloodSugarDropSamples}, function(err, results){
+        //if(err) console.log( err);
+
+        processResults(results, function(processed){
+            cb(processed);
+        })
+    });
 };
 
 

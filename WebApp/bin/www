@@ -15,10 +15,41 @@ var NVoter = new soap(wsdl_sources);
 
 
 setTimeout(function(){
-  NVoter.getBackgroundInsulinDose(10, function(r){
-    console.log(r);
+
+  NVoter.getBackgroundInsulinDose(79, function(r){
+    console.log("Backgournd insulin dose(79): " + r.result + " (expected: 22)");
   });
-}, 1000);
+
+  NVoter.getMealtimeInsulinDose(60, 12, 200, 100, 25, function(r){
+    console.log("MealtimeInsulinDose(60, 12, 200, 100, 25): " + r.result + " (expected: 14)");
+  });
+
+  NVoter.getMealtimeInsulinDose(95, 10, 100, 120, 50 , function(r){
+    console.log("MealtimeInsulinDose(95, 10, 100, 120, 50): " + r.result + " (expected: 0)");
+  });
+
+  NVoter.getMealtimeInsulinDose(120, 14, 170, 100, 60, function(r){
+    console.log("MealtimeInsulinDose(120, 14, 170, 100, 60): " + r.result + " (expected: 8)");
+  });
+
+  NVoter.getPersonalSensitivityToInsulin(5, [0, 10], [50, 50], function(r){
+    console.log("personalSensitivityToInsulin(5, {0, 10}, {50, 50}): " + r.result + " (expected: 50)");
+  });
+
+  NVoter.getPersonalSensitivityToInsulin(6, [2, 8], [32, 83], function(r){
+    console.log("personalSensitivityToInsulin(6, {2, 8}, {32, 83}): " + r.result + " (expected: 66)");
+  });
+
+  NVoter.getPersonalSensitivityToInsulin(0, [1, 3, 10], [33, 43, 70], function(r){
+    console.log("personalSensitivityToInsulin(0, {1, 3, 10}, {33, 43, 70}): " + r.result + " (expected: 30)");
+  });
+
+  NVoter.getPersonalSensitivityToInsulin(4, [1, 6, 8, 9], [32, 61, 91, 88] , function(r){
+    console.log("personalSensitivityToInsulin(4, {1, 6, 8, 9}, {32, 61, 91, 88} ): " + r.result + " (expected: 53)");
+  });
+
+
+}, 500);
 
 
 /**
