@@ -6,13 +6,25 @@
 var soap = require('soap');
 var util = require('util');
 var async = require("async");
+var util = require("util");
 
 var func = function(client, apiMethodName, args, callback){
 
+    //console.log(util.inspect(client, { showHidden: false, depth: null, colors: true }));
+    var clientURI = client.wsdl.uri;
+
     client[apiMethodName](args, function(err, result) {
+        //console.log(result)
+        if(result === undefined)
+            result = {return: null};
+
+        result.endpoint = clientURI;
+
         if(err)
-            return callback(null, null);
+            return callback(null, result);
+
         callback(null, result);
+
     }, {timeout: 3000});
 
 
@@ -21,15 +33,17 @@ var func = function(client, apiMethodName, args, callback){
 // TODO processar varios resultados dos nvoters
 // TODO tem de retornar os resultados individuais de cada endpoint
 var processResults = function(results, callback){
+
+    var f = {source: results};
     results.forEach(function(ret){
 
     });
 
-    callback(results);
+    callback(f);
 };
 
 
-function Voter (wsdls){
+function Voter(wsdls){
     this.clients = [];
 
     var that = this;

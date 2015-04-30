@@ -9,7 +9,7 @@ var debug = require('debug')('WebApp:server');
 var http = require('http');
 
 
-var wsdl_sources = ['http://localhost:8081/insulin/?wsdl', 'http://localhost:8081/insulin/?wsdl'];
+var wsdl_sources = ['http://localhost:8081/insulin/?wsdl'];
 var soap = require("../soap");
 var NVoter = new soap(wsdl_sources);
 
