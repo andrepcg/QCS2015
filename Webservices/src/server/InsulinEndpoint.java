@@ -17,7 +17,5 @@ public class InsulinEndpoint {
         String address = "http://localhost:8081/insulin/";
         Endpoint.publish(address, insulin);
         System.out.println("Webservices online at: " + address);
-
-        System.out.println(insulin.mealtimeInsulinDose(60, 12, 200, 100, 25));
     }
 }

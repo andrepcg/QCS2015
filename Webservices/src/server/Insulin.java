@@ -21,9 +21,12 @@ public class Insulin implements InsulinDoseCalculator {
      */
     public int mealtimeInsulinDose(int carbohydrateAmount, int carbohydrateToInsulinRatio, int preMealBloodSugar, int targetBloodSugar, int personalSensitivity) {
         try {
+            if(targetBloodSugar > preMealBloodSugar)
+                return 0;
+
             double hbloodSugar = (double)(preMealBloodSugar - targetBloodSugar) / personalSensitivity;
 
-            double carbDose = carbohydrateAmount / ((carbohydrateToInsulinRatio * 10.0) / 12.0);
+            double carbDose = carbohydrateAmount / carbohydrateToInsulinRatio / personalSensitivity * 50;
 
             return (int)(hbloodSugar + carbDose);
         }catch (Exception e ){
