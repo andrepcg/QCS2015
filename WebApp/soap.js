@@ -9,18 +9,17 @@ var async = require("async");
 
 var func = function(client, apiMethodName, args, callback){
 
-    //console.log("Func client", client);
-
     client[apiMethodName](args, function(err, result) {
         if(err)
-            return callback(err);
+            return callback(null, null);
         callback(null, result);
-    }, {timeout: 5000});
+    }, {timeout: 3000});
 
 
 }
 
 // TODO processar varios resultados dos nvoters
+// TODO tem de retornar os resultados individuais de cada endpoint
 var processResults = function(results, callback){
     results.forEach(function(ret){
 
@@ -45,7 +44,6 @@ function Voter (wsdls){
     this.callNvoters = function(apiMethodName, params, callback){
         var funcArray = [];
 
-
         that.clients.forEach(function(client){
             funcArray.push(function(cb){
                 func(client, apiMethodName, params, cb);
@@ -58,7 +56,7 @@ function Voter (wsdls){
 
 Voter.prototype.getBackgroundInsulinDose = function(bodyWeight, cb){
     this.callNvoters("backgroundInsulinDose", {arg0: bodyWeight}, function(err, results){
-        if(err) throw err;
+        //if(err) console.log( err);
 
         processResults(results, function(processed){
             cb(processed);
