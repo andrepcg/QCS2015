@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Manage Subscriptions</title>
+
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .hero-unit {
+            background: #E0E0E0;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container ">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="jumbotron">
+                <h3><strong>Adicionar Subscrição</strong></h3>
+                <form id="addSubscription" action="http://localhost:8081/htmlSubscribe" method="GET" onSubmit="return addSubscription()" class="form-horizontal" role="form">
+                    <input type="hidden" name="type" value="subscribe">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="email_subscribe" name="email" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-2 control-label">Secção</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="seccao">
+                                <option value="Africa">Africa</option>
+                                <option value="Asia">Asia</option>
+                                <option value="Europe">Europe</option>
+                                <option value="Middle East">Middle East</option>
+                                <option value="Latin America">Latin America</option>
+                                <option value="U.S.">U.S.</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" value="digest" name="subscriptionType"> Digest
+                                </label>
+
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" value="non-digest" name="subscriptionType"> Non-Digest
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary btn-small pull-right">Subscrever</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="jumbotron">
+                <h3><strong>Remover Subscrição</strong></h3>
+                <form id="addSubscription" action="http://localhost:8081/htmlSubscribe" method="GET" onSubmit="return removeSubscription()" class="form-horizontal" role="form">
+                    <input type="hidden" name="type" value="unsubscribe">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="email_unsubscribe" name="email" placeholder="Email">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-danger btn-small pull-right">Desinscrever</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron">
+                <h3><strong>Adicionar notícias (XML)</strong></h3>
+                <form id="addNews" action="http://localhost:8081/addnews" method="GET" onSubmit="return addNews()" class="form-horizontal" role="form">
+                    <textarea class="form-control" rows="3" id="xml" name="xml"></textarea>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary btn-small pull-right">Submeter</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+<script>
+    function addSubscription() {
+        if ($('#email_subscribe').val().length == 0) {
+            alert("Email must be filled!");
+            return false;
+        }
+
+        if ($(':radio:checked').length == 0) {
+            alert("You must choose type of subscription!");
+            return false;
+        }
+
+        return true;
+    }
+
+    function addNews() {
+        if ($('#xml').val().length == 0) {
+            alert("XML must be filled!");
+            return false;
+        }
+
+        return true;
+    }
+
+    function removeSubscription() {
+        if ($('#email_subscribe').val().length == 0) {
+            alert("Email must be filled!");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+
+</body>
+</html>
