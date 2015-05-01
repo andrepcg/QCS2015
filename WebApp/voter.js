@@ -30,15 +30,20 @@ var func = function(client, apiMethodName, args, callback){
 
 }
 
-// TODO processar varios resultados dos nvoters
-// TODO tem de retornar os resultados individuais de cada endpoint
+
 var processResults = function(results, callback){
 
-    var availableRes = 0;
-
-    var o = {};
-
     var f = {source: results};
+
+    f.result = majorityVoter(results);
+
+    callback(f);
+};
+
+// TODO nao fazer comparacao caracter a caracter
+var majorityVoter = function(results){
+    var o = {};
+    var availableRes = 0;
     results.forEach(function(ret){
         if(ret.return !== null) {
             availableRes++;
@@ -59,10 +64,11 @@ var processResults = function(results, callback){
         }
     }
 
-    f.result = res;
+    if(availableRes > 2)
+        return res;
 
-    callback(f);
-};
+    return null;
+}
 
 
 function Voter(wsdls){
