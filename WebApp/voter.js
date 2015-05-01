@@ -46,7 +46,7 @@ var processResults = function(results, callback){
     callback(f);
 };
 
-// TODO nao fazer comparacao caracter a caracter
+
 var majorityVoter = function(results){
     
     /*

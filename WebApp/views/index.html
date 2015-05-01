@@ -21,27 +21,113 @@
 <body>
 <div class="container ">
     <div class="row">
-        <div class="col-md-6">
-            <div class="jumbotron">
-                <h3><strong>Adicionar Subscrição</strong></h3>
-                <form id="addSubscription" action="http://localhost:8081/htmlSubscribe" method="GET" onSubmit="return addSubscription()" class="form-horizontal" role="form">
+        <div class="col-md-8 tab-content">
+            <div role="tabpanel" id="mealtimeinsulindose" class="jumbotron tab-pane fade in active">
+                <h3><strong>Mealtime insulin dose</strong></h3>
+
+                <form class="form-horizontal" style="margin-top: 30px;" role="form">
                     <input type="hidden" name="type" value="subscribe">
                     <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
-                        <div class="col-sm-10">
+                        <label class="col-sm-4 control-label">Carbohydrate amount</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="carbohydrateAmount" placeholder="asd">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Carbohydrate to insulin ratio</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="carbohydrateToInsulinRatio" placeholder="dfg">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Pre meal blood sugar</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="preMealBloodSugar" placeholder="ert">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Target blood sugar</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="targetBloodSugar" placeholder="targetBloodSugar">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Personal sensitivity</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="personalSensitivity" placeholder="personalSensitivity">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-4 col-sm-8">
+
+                            <label>
+                                <input type="checkbox" name="explain"> Query details
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary btn-small pull-right">Submit</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div role="tabpanel" id="backgroundinsulindose" class="jumbotron tab-pane fade ">
+                <h3><strong>Background insulin dose</strong></h3>
+
+                <form class="form-horizontal" role="form" style="margin-top: 30px;">
+                    <input type="hidden" name="type" value="subscribe">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Body weight</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="bodyWeight" placeholder="75kg">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-9">
+
+                                <label>
+                                    <input type="checkbox" name="explain"> Query details
+                                </label>
+
+
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary btn-small pull-right">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div role="tabpanel" id="personalinsulinsensivity" class="jumbotron tab-pane fade">
+                <h3><strong>Personal insulin sensivity</strong></h3>
+                <form class="form-horizontal" style="margin-top: 30px;" role="form">
+                    <input type="hidden" name="type" value="subscribe">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Email</label>
+                        <div class="col-sm-9">
                             <input type="email" class="form-control" id="email_subscribe" name="email" placeholder="Email">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-2 control-label">Secção</label>
+                        <label class="col-sm-2 control-label">Secção</label>
                         <div class="col-sm-10">
                             <select class="form-control" name="seccao">
                                 <option value="Africa">Africa</option>
                                 <option value="Asia">Asia</option>
                                 <option value="Europe">Europe</option>
-                                <option value="Middle East">Middle East</option>
-                                <option value="Latin America">Latin America</option>
-                                <option value="U.S.">U.S.</option>
                             </select>
                         </div>
                     </div>
@@ -69,25 +155,12 @@
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="jumbotron">
-                <h3><strong>Remover Subscrição</strong></h3>
-                <form id="addSubscription" action="http://localhost:8081/htmlSubscribe" method="GET" onSubmit="return removeSubscription()" class="form-horizontal" role="form">
-                    <input type="hidden" name="type" value="unsubscribe">
-                    <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control" id="email_unsubscribe" name="email" placeholder="Email">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-danger btn-small pull-right">Desinscrever</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+        <div class="col-md-4">
+            <ul class="nav nav-pills nav-stacked">
+                <li role="presentation" class="active"><a href="#mealtimeinsulindose" aria-controls="home" role="mealtimeinsulindose" data-toggle="tab">Mealtime insulin dose</a></li>
+                <li role="presentation"><a href="#backgroundinsulindose" aria-controls="home" role="backgroundinsulindose" data-toggle="tab">Background insulin dose</a></li>
+                <li role="presentation"><a href="#personalinsulinsensivity" aria-controls="home" role="personalinsulinsensivity" data-toggle="tab">Personal insulin sensivity</a></li>
+            </ul>
         </div>
 
     </div>
@@ -95,15 +168,9 @@
     <div class="row">
         <div class="col-md-12">
             <div class="jumbotron">
-                <h3><strong>Adicionar notícias (XML)</strong></h3>
-                <form id="addNews" action="http://localhost:8081/addnews" method="GET" onSubmit="return addNews()" class="form-horizontal" role="form">
-                    <textarea class="form-control" rows="3" id="xml" name="xml"></textarea>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-primary btn-small pull-right">Submeter</button>
-                        </div>
-                    </div>
-                </form>
+
+                <textarea class="form-control" rows="3" id="xml" name="xml"></textarea>
+
             </div>
         </div>
     </div>
