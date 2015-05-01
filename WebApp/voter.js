@@ -1,5 +1,5 @@
 /**
- * Created by André on 30/04/2015.
+ * Created by Andrï¿½ on 30/04/2015.
  */
 
 
@@ -42,30 +42,49 @@ var processResults = function(results, callback){
 
 // TODO nao fazer comparacao caracter a caracter
 var majorityVoter = function(results){
-    var o = {};
-    var availableRes = 0;
-    results.forEach(function(ret){
-        if(ret.return !== null) {
-            availableRes++;
-            if(o.hasOwnProperty(ret.return))
-                o[ret.return]++;
-            else
-                o[ret.return] = 1;
-        }
-    });
-    var max = 0;
+    
+    /*
+    *   Calcula a moda (numero mais frequente)
+    *   ignora o valor do proprio numero, tratando-o como uma string. a comparaï¿½ao ï¿½ feita com base na igualdade dos caracteres
+    */
+    var freqs = {};
+    var maxAgreements = 0;
     var res;
-    for (var key in o) {
-        if (o.hasOwnProperty(key)) {
-            if(o[key] > max){
-                max = o[key];
-                res = key;
+
+    console.log(typeof results[0].return);
+
+    for(var ret in results){
+        var ret = results[ret];
+        if(ret.return !== null){
+
+            freqs[ret.return] = (freqs[ret.return] || 0) + 1;
+            if(freqs[ret.return] > maxAgreements){
+                maxAgreements = freqs[ret.return];
+                res = ret.return;
             }
         }
     }
 
-    if(availableRes > 2)
+    //res = parseFloat(res);
+
+    // se existirem pelo menos 3 valores identicos entao temos resultado
+    if(maxAgreements > 2)
         return res;
+
+    // Se nao existirem acordo entre 3 votadores procurar numeros que distam da moda +-1 unidade (erros de arredondamento)
+    if(maxAgreements === 2){
+        for(var i in results){
+            var valor = results[i].return;
+            if(Math.abs(valor - res) === 1){
+                maxAgreements++;
+            }
+        }
+    }
+
+    if(maxAgreements > 2)
+        return res;
+
+
 
     return null;
 }
