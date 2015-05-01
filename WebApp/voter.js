@@ -8,24 +8,30 @@ var util = require('util');
 var async = require("async");
 var util = require("util");
 
+var timeout = 3000;
+
 var func = function(client, apiMethodName, args, callback){
 
-    //console.log(util.inspect(client, { showHidden: false, depth: null, colors: true }));
-    var clientURI = client.wsdl.uri;
 
+    var clientURI = client.wsdl.uri;
+    var start = Date.now();
     client[apiMethodName](args, function(err, result) {
-        //console.log(result)
+
         if(result === undefined)
             result = {return: null};
 
+        result.responseTime = Date.now() - start;
+
         result.endpoint = clientURI;
 
-        if(err)
+        if(err) {
+            if(err.code === 'ETIMEDOUT')
+                result.responseTime = 'TIMEOUT';
             return callback(null, result);
-
+        }
         callback(null, result);
 
-    }, {timeout: 3000});
+    }, {timeout: timeout});
 
 
 }
@@ -51,7 +57,6 @@ var majorityVoter = function(results){
     var maxAgreements = 0;
     var res;
 
-    console.log(typeof results[0].return);
 
     for(var ret in results){
         var ret = results[ret];
@@ -95,9 +100,13 @@ function Voter(wsdls){
 
     var that = this;
 
+    /*
+    *   Create WDSL clients
+     */
     wsdls.forEach(function(url){
         soap.createClient(url, function(err, client) {
-            if (err) throw err;
+            if (err)
+                console.error(err);
             that.clients.push(client);
         });
     });
@@ -110,6 +119,7 @@ function Voter(wsdls){
                 func(client, apiMethodName, params, cb);
             });
         });
+
         async.parallel(funcArray, callback);
     }
 

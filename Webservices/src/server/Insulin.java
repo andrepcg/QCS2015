@@ -2,6 +2,7 @@ package server;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
+import java.util.Random;
 
 /**
  * Created by joni on 11/04/15.

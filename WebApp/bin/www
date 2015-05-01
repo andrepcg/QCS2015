@@ -12,12 +12,13 @@ var http = require('http');
 var wsdl_sources = ['http://localhost:8081/insulin/?wsdl', 'http://localhost:8081/insulin/?wsdl', 'http://localhost:8081/insulin/?wsdl'];
 var soap = require("../voter");
 var NVoter = new soap(wsdl_sources);
-
+var util = require("util");
 
 setTimeout(function(){
 
   NVoter.getBackgroundInsulinDose(79, function(r){
     console.log("Backgournd insulin dose(79): " + r.result + " (expected: 22)");
+    console.log(util.inspect(r, { showHidden: false, depth: null, colors: true }));
   });
 /*
   NVoter.getMealtimeInsulinDose(60, 12, 200, 100, 25, function(r){
