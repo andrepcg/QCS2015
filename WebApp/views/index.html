@@ -5,7 +5,7 @@
     <title>Manage Subscriptions</title>
 
     <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <style>
 
         body {
@@ -21,12 +21,20 @@
 <body>
 <div class="container ">
     <div class="row">
+
+        <div class="col-md-8">
+            <ul id="myTab" class="nav nav-pills" role="tablist">
+                <li role="presentation" class="active"><a href="#mealtimeinsulindose" aria-controls="home" role="mealtimeinsulindose" data-toggle="tab">Mealtime insulin dose</a></li>
+                <li role="presentation"><a href="#backgroundinsulindose" aria-controls="home" role="backgroundinsulindose" data-toggle="tab">Background insulin dose</a></li>
+                <li role="presentation"><a href="#personalinsulinsensivity" aria-controls="home" role="personalinsulinsensivity" data-toggle="tab">Personal insulin sensivity</a></li>
+            </ul>
+        </div>
+
         <div class="col-md-8 tab-content">
             <div role="tabpanel" id="mealtimeinsulindose" class="jumbotron tab-pane fade in active">
                 <h3><strong>Mealtime insulin dose</strong></h3>
 
                 <form class="form-horizontal" style="margin-top: 30px;" role="form">
-                    <input type="hidden" name="type" value="subscribe">
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Carbohydrate amount</label>
                         <div class="col-sm-8">
@@ -84,7 +92,7 @@
                 <h3><strong>Background insulin dose</strong></h3>
 
                 <form class="form-horizontal" role="form" style="margin-top: 30px;">
-                    <input type="hidden" name="type" value="subscribe">
+
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Body weight</label>
                         <div class="col-sm-9">
@@ -94,13 +102,9 @@
 
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-9">
-
                                 <label>
                                     <input type="checkbox" name="explain"> Query details
                                 </label>
-
-
-
                         </div>
                     </div>
                     <div class="form-group">
@@ -114,36 +118,33 @@
             <div role="tabpanel" id="personalinsulinsensivity" class="jumbotron tab-pane fade">
                 <h3><strong>Personal insulin sensivity</strong></h3>
                 <form class="form-horizontal" style="margin-top: 30px;" role="form">
-                    <input type="hidden" name="type" value="subscribe">
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Email</label>
-                        <div class="col-sm-9">
-                            <input type="email" class="form-control" id="email_subscribe" name="email" placeholder="Email">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Secção</label>
-                        <div class="col-sm-10">
-                            <select class="form-control" name="seccao">
-                                <option value="Africa">Africa</option>
-                                <option value="Asia">Asia</option>
-                                <option value="Europe">Europe</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" value="digest" name="subscriptionType"> Digest
-                                </label>
 
-                            </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" value="non-digest" name="subscriptionType"> Non-Digest
-                                </label>
-                            </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Personal activity level</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="physicalActivityLevel" placeholder="0-10">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Physical activity samples</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="physicalActivitySamples" placeholder="4,3,8">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Blood sugar samples</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="bloodSugarDropSamples" placeholder="50,27,32">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-9">
+                            <label>
+                                <input type="checkbox" name="explain"> Query details
+                            </label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -156,22 +157,26 @@
         </div>
 
         <div class="col-md-4">
-            <ul class="nav nav-pills nav-stacked">
-                <li role="presentation" class="active"><a href="#mealtimeinsulindose" aria-controls="home" role="mealtimeinsulindose" data-toggle="tab">Mealtime insulin dose</a></li>
-                <li role="presentation"><a href="#backgroundinsulindose" aria-controls="home" role="backgroundinsulindose" data-toggle="tab">Background insulin dose</a></li>
-                <li role="presentation"><a href="#personalinsulinsensivity" aria-controls="home" role="personalinsulinsensivity" data-toggle="tab">Personal insulin sensivity</a></li>
-            </ul>
+
+            <button class="btn btn-primary" id="waitingresponse" type="button" style="display: none;">
+                Waiting response <i class="fa fa-spinner fa-spin"></i>
+            </button>
+
+
+
+            <h2>Results</h2>
+            <input class="form-control"  id="results">
         </div>
 
     </div>
 
     <div class="row">
         <div class="col-md-12">
-            <div class="jumbotron">
 
+                <h3>Details</h3>
                 <textarea class="form-control" rows="3" id="xml" name="xml"></textarea>
 
-            </div>
+
         </div>
     </div>
 
@@ -181,37 +186,75 @@
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
 <script>
-    function addSubscription() {
-        if ($('#email_subscribe').val().length == 0) {
-            alert("Email must be filled!");
-            return false;
-        }
+    $( document ).ready(function() {
 
-        if ($(':radio:checked').length == 0) {
-            alert("You must choose type of subscription!");
-            return false;
-        }
+        $(document).bind("ajaxSend", function(){
+            $("#waitingresponse").show();
+        }).bind("ajaxComplete", function(){
+            $("#waitingresponse").hide();
+        });
 
-        return true;
-    }
+        $("#backgroundinsulindose form").submit(function( event ) {
+            event.preventDefault();
+            $.ajax({
+                dataType: "json",
+                url: "api/background_insulin_dose",
+                data: {bodyWeight: $("#backgroundinsulindose input[name=bodyWeight]").val()},
+                success: function(result){
+                    console.log(result);
+                    $("#results").val(result.result);
+                }
+            });
+        });
 
-    function addNews() {
-        if ($('#xml').val().length == 0) {
-            alert("XML must be filled!");
-            return false;
-        }
+        $("#personalinsulinsensivity form").submit(function( event ) {
+            event.preventDefault();
 
-        return true;
-    }
+            var physicalSamples = $("#personalinsulinsensivity input[name=physicalActivitySamples]").val().split(",");
+            /*for(var i = 0; i < physicalSamples.length; i++){
+                physicalSamples[i] = parseInt(physicalSamples[i]);
+            }*/
 
-    function removeSubscription() {
-        if ($('#email_subscribe').val().length == 0) {
-            alert("Email must be filled!");
-            return false;
-        }
+            var bloodSamples = $("#personalinsulinsensivity input[name=bloodSugarDropSamples]").val().split(",");
+            /*for(var i = 0; i < bloodSamples.length; i++){
+                bloodSamples[i] = parseInt(bloodSamples[i]);
+            }*/
 
-        return true;
-    }
+
+            $.ajax({
+                dataType: "json",
+                url: "api/personal_sensitivity_insulin",
+                data: {
+                    physicalActivityLevel: $("#personalinsulinsensivity input[name=physicalActivityLevel]").val(),
+                    physicalActivitySamples: physicalSamples,
+                    bloodSugarDropSamples: bloodSamples
+                },
+                success: function(result){
+                    console.log(result);
+                    $("#results").val(result.result);
+                }
+            });
+        });
+
+        $("#mealtimeinsulindose form").submit(function( event ) {
+            event.preventDefault();
+            $.ajax({
+                dataType: "json",
+                url: "api/mealtime_insulin_dose",
+                data: {
+                    carbohydrateAmount: $("#mealtimeinsulindose input[name=carbohydrateAmount]").val(),
+                    carbohydrateToInsulinRatio: $("#mealtimeinsulindose input[name=carbohydrateToInsulinRatio]").val(),
+                    preMealBloodSugar: $("#mealtimeinsulindose input[name=preMealBloodSugar]").val(),
+                    targetBloodSugar: $("#mealtimeinsulindose input[name=targetBloodSugar]").val(),
+                    personalSensitivity: $("#mealtimeinsulindose input[name=personalSensitivity]").val()
+                },
+                success: function(result){
+                    console.log(result);
+                    $("#results").val(result.result);
+                }
+            });
+        });
+    });
 </script>
 
 </body>

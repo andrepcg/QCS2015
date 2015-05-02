@@ -36,6 +36,7 @@ router.get('/personal_sensitivity_insulin', function(req, res, next) {
     var a2 = req.query.physicalActivitySamples;
     var a3 = req.query.bloodSugarDropSamples;
 
+
     NVoter.getPersonalSensitivityToInsulin(a1, a2, a3, function(r){
         res.json(r);
     });
