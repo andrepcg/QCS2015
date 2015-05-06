@@ -6,6 +6,7 @@
 
     <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link href="css/formValidation.min.css" rel="stylesheet">
     <style>
 
         body {
@@ -109,7 +110,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-primary btn-small pull-right">Submit</button>
+                            <button class="btn btn-primary btn-small pull-right">Submit</button>
                         </div>
                     </div>
                 </form>
@@ -184,14 +185,61 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script src="js/formValidation.min.js"></script>
+<script src="js/framework/bootstrap.min.js"></script>
 
 <script>
+    /*
+
+     Finally, here are some typical values that you may use to make the interface robust:
+     backgroundInsulinDose
+     bodyWeight entre 60kg e 120kg
+     mealtimeInsulinDose
+     carbohydrateAmount between 60g and 150g
+     carbohydrateToInsulinRatio between 10g/unit and 15g/unit
+     preMealBloodSugar between 120mg/dl and 250mg/dl
+     targetBloodSugar between 80mg/dl and 120mg/dl
+     personalSensitivity between 15mg/dl and 100mg/dl
+     (Note: the median of 50mg/dl for 'personalSensitivity' corresponds to the median of 12g/unit for 'carbohydrateToInsulinRatio'.)
+
+     personalSensitivityToInsulin
+     physicalActivityLevel between 0 and 10 (no units)
+     bloodSugarDropSamples between 15mg/dl and 100mg/dl
+
+
+     */
     $( document ).ready(function() {
 
         $(document).bind("ajaxSend", function(){
             $("#waitingresponse").show();
         }).bind("ajaxComplete", function(){
             $("#waitingresponse").hide();
+        });
+
+        $('#backgroundinsulindose form').formValidation({
+            framework: 'bootstrap',
+            icon: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                bodyWeight: {
+                    validators: {
+                        notEmpty: {
+                            message: 'O peso é necessário'
+                        },
+                        numeric: {
+                            message: 'O peso deve ser um valor numérico'
+                        },
+                        between: {
+                            min: 60,
+                            max: 120,
+                            message: 'O peso deve encontrar-se acima de 60kg e abaixo de 120'
+                        }
+                    }
+                }
+            }
         });
 
         $("#backgroundinsulindose form").submit(function( event ) {
@@ -211,14 +259,7 @@
             event.preventDefault();
 
             var physicalSamples = $("#personalinsulinsensivity input[name=physicalActivitySamples]").val().split(",");
-            /*for(var i = 0; i < physicalSamples.length; i++){
-                physicalSamples[i] = parseInt(physicalSamples[i]);
-            }*/
-
             var bloodSamples = $("#personalinsulinsensivity input[name=bloodSugarDropSamples]").val().split(",");
-            /*for(var i = 0; i < bloodSamples.length; i++){
-                bloodSamples[i] = parseInt(bloodSamples[i]);
-            }*/
 
 
             $.ajax({
