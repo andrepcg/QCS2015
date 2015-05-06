@@ -27,9 +27,9 @@ public class Insulin implements InsulinDoseCalculator {
 
             double hbloodSugar = (double)(preMealBloodSugar - targetBloodSugar) / personalSensitivity;
 
-            double carbDose = carbohydrateAmount / carbohydrateToInsulinRatio / personalSensitivity * 50;
+            double carbDose = carbohydrateAmount / carbohydrateToInsulinRatio / (double)personalSensitivity * 50;
 
-            return (int)(hbloodSugar + carbDose);
+            return (int)Math.ceil(hbloodSugar + carbDose);
         }catch (Exception e ){
             return -1;
         }
@@ -81,7 +81,7 @@ public class Insulin implements InsulinDoseCalculator {
             double alpha = (1.0 / n) * Sy - beta * (1.0 / n) * Sx;
 
 
-            return (int)(alpha + beta * physicalActivityLevel);
+            return (int)Math.ceil((alpha + beta * physicalActivityLevel));
 
         }catch (Exception e){
             return -1;

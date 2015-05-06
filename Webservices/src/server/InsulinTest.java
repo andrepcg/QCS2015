@@ -35,7 +35,7 @@ public class InsulinTest {
 
         assertEquals(50, insulin.personalSensitivityToInsulin(5, new int[]{0, 10}, new int[]{50, 50}));
         assertEquals(66, insulin.personalSensitivityToInsulin(6, new int[]{2, 8}, new int[]{32, 83}));
-        assertEquals(30, insulin.personalSensitivityToInsulin(0, new int[]{1, 3, 10}, new int[]{33, 43, 70}));
         assertEquals(53, insulin.personalSensitivityToInsulin(4, new int[]{1, 6, 8, 9}, new int[]{32, 61, 91, 88}));
+        assertEquals(30, insulin.personalSensitivityToInsulin(0, new int[]{1, 3, 10}, new int[]{33, 43, 70}));
     }
 }
