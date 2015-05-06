@@ -59,7 +59,7 @@ public class Insulin implements InsulinDoseCalculator {
      */
     public int personalSensitivityToInsulin(int physicalActivityLevel, int[] physicalActivitySamples, int[] bloodSugarDropSamples) {
         try{
-            if ( physicalActivitySamples.length > 10 && physicalActivitySamples.length != bloodSugarDropSamples.length)
+            if ( physicalActivitySamples.length < 2 || physicalActivitySamples.length > 10 || physicalActivitySamples.length != bloodSugarDropSamples.length)
                 throw new Exception();
 
             int n = physicalActivitySamples.length;
