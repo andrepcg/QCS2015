@@ -70,7 +70,6 @@ var majorityVoter = function(results){
         }
     }
 
-    //res = parseFloat(res);
 
     // se existirem pelo menos 3 valores identicos entao temos resultado
     if(maxAgreements > 2)
@@ -106,7 +105,7 @@ function Voter(wsdls){
     wsdls.forEach(function(url){
         soap.createClient(url, function(err, client) {
             if (err)
-                console.error(err);
+                console.error(url, err);
             that.clients.push(client);
         });
     });

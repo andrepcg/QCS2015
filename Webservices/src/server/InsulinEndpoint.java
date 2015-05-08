@@ -20,10 +20,7 @@ public class InsulinEndpoint {
         Insulin insulin = new Insulin ();
 
         String address = "http://0.0.0.0:8080/insulin/";
-        /*
-        Endpoint.publish(address, insulin);
-        System.out.println("Webservices online at: " + address);
-*/
+  /*
 
         Map<String, Object> properties = new HashMap<String, Object>();
 
@@ -37,9 +34,9 @@ public class InsulinEndpoint {
                 new QName(
                         "http://www.yournamespace.com/",
                         "insulin"));
-
+*/
         Endpoint endpoint = Endpoint.create(insulin);
-        endpoint.setProperties(properties);
+        //endpoint.setProperties(properties);
         Endpoint.publish(address, insulin);
         System.out.println("Webservices online at: " + address);
     }
