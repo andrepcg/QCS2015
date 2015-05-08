@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var wsdl_sources = ['http://localhost:8081/insulin/?wsdl', 'http://localhost:8081/insulin/?wsdl', 'http://localhost:8081/insulin/?wsdl'];
+var wsdl_sources = ['http://localhost:8080/insulin/?wsdl', 'http://localhost:8080/insulin/?wsdl', 'http://212.47.238.219:8080/insulin/?wsdl'];
 var soap = require("../voter");
 var NVoter = new soap(wsdl_sources);
 

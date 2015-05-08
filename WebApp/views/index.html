@@ -110,7 +110,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <button class="btn btn-primary btn-small pull-right">Submit</button>
+                            <button type="submit" class="btn btn-primary btn-small pull-right">Submit</button>
                         </div>
                     </div>
                 </form>
@@ -239,6 +239,15 @@
                         }
                     }
                 }
+            }
+        }).on('err.field.fv', function(e, data) {
+            if (data.fv.getSubmitButton()) {
+                data.fv.disableSubmitButtons(false);
+            }
+        })
+        .on('success.field.fv', function(e, data) {
+            if (data.fv.getSubmitButton()) {
+                data.fv.disableSubmitButtons(false);
             }
         });
 
