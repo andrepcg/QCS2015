@@ -74,7 +74,7 @@
                         <div class="col-sm-offset-4 col-sm-8">
 
                             <label>
-                                <input type="checkbox" name="explain"> Query details
+                                <input type="checkbox" name="explain"> Technical details
                             </label>
 
                         </div>
@@ -104,7 +104,7 @@
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-9">
                                 <label>
-                                    <input type="checkbox" name="explain"> Query details
+                                    <input type="checkbox" name="explain"> Technical details
                                 </label>
                         </div>
                     </div>
@@ -144,7 +144,7 @@
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-9">
                             <label>
-                                <input type="checkbox" name="explain"> Query details
+                                <input type="checkbox" name="explain"> Technical details
                             </label>
                         </div>
                     </div>
@@ -175,7 +175,7 @@
         <div class="col-md-12">
 
                 <h3>Details</h3>
-                <textarea class="form-control" rows="3" id="xml" name="xml"></textarea>
+                <textarea class="form-control" rows="20" id="xml" name="xml"></textarea>
 
 
         </div>
@@ -208,6 +208,21 @@
 
 
      */
+
+    var parseDetails = function(data){
+        // data.result -> resultado final
+        // data.source -> lista
+        //$("#xml").val("");
+
+        for(var i = 0; i < data.source.length; i++){
+            var endpoint = data.source[i];
+            $("#xml").append("Source: " + endpoint.endpoint + "\n");
+            $("#xml").append("Response time: " + endpoint.responseTime + "\n");
+            $("#xml").append("Result: " + endpoint.return + "\n\n");
+        }
+    };
+
+
     $( document ).ready(function() {
 
         $(document).bind("ajaxSend", function(){
@@ -242,14 +257,29 @@
             }
         }).on('err.field.fv', function(e, data) {
             if (data.fv.getSubmitButton()) {
-                data.fv.disableSubmitButtons(false);
+                data.fv.disableSubmitButtons(true);
             }
         })
         .on('success.field.fv', function(e, data) {
             if (data.fv.getSubmitButton()) {
                 data.fv.disableSubmitButtons(false);
             }
-        });
+
+        }).on('success.form.fv', function(e) {
+                    // Prevent form submission
+                    e.preventDefault();
+
+                    $.ajax({
+                        dataType: "json",
+                        url: "api/background_insulin_dose",
+                        data: {bodyWeight: $("#backgroundinsulindose input[name=bodyWeight]").val()},
+                        success: function(result){
+                            console.log(result);
+                            $("#results").val(result.result);
+                            parseDetails(result);
+                        }
+                    });
+                });;/*
 
         $("#backgroundinsulindose form").submit(function( event ) {
             event.preventDefault();
@@ -263,7 +293,7 @@
                 }
             });
         });
-
+*/
         $("#personalinsulinsensivity form").submit(function( event ) {
             event.preventDefault();
 
