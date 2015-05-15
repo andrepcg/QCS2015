@@ -163,6 +163,14 @@
                 Waiting response <i class="fa fa-spinner fa-spin"></i>
             </button>
 
+            <button class="btn btn-warning" id="retrying" type="button" style="display: none;">
+                <i class="fa fa-spinner fa-spin"></i> Failed, retrying...
+            </button>
+
+            <button class="btn btn-danger" id="failed" type="button" style="display: none;">
+                <i class="fa fa-times"></i> Failed
+            </button>
+
 
 
             <h2>Results</h2>
@@ -185,6 +193,7 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/async/0.9.0/async.min.js"></script>
 <script src="js/formValidation.min.js"></script>
 <script src="js/framework/bootstrap.min.js"></script>
 
@@ -212,7 +221,7 @@
     var parseDetails = function(data){
         // data.result -> resultado final
         // data.source -> lista
-        //$("#xml").val("");
+        $("#xml").text("");
 
         for(var i = 0; i < data.source.length; i++){
             var endpoint = data.source[i];
@@ -266,55 +275,245 @@
             }
 
         }).on('success.form.fv', function(e) {
-                    // Prevent form submission
-                    e.preventDefault();
+            e.preventDefault();
 
-                    $.ajax({
-                        dataType: "json",
-                        url: "api/background_insulin_dose",
-                        data: {bodyWeight: $("#backgroundinsulindose input[name=bodyWeight]").val()},
-                        success: function(result){
-                            console.log(result);
-                            $("#results").val(result.result);
-                            parseDetails(result);
-                        }
-                    });
-                });;/*
+            var data = {bodyWeight: $("#backgroundinsulindose input[name=bodyWeight]").val()};
 
-        $("#backgroundinsulindose form").submit(function( event ) {
-            event.preventDefault();
+            async.retry(3, function(cb, results){
+                background_insulin_dose(data, function(err, result){
+                    if(err) {
+                        $("#retrying").show();
+                        cb(err);
+                    }
+                    else
+                        cb(null, result);
+                });
+            }, function(err, result) {
+
+                if(err) {
+                    console.error(err);
+                    $("#failed").show();
+                    $("#retrying").hide();
+                }
+
+                if(result) {
+                    console.log(result);
+                    $("#results").val(result.result);
+                    parseDetails(result);
+                    $("#retrying").hide();
+                    $("#failed").hide();
+                }
+            });
+
+
+        });
+
+        function background_insulin_dose(data, cb){
             $.ajax({
                 dataType: "json",
                 url: "api/background_insulin_dose",
-                data: {bodyWeight: $("#backgroundinsulindose input[name=bodyWeight]").val()},
+                data: data,
                 success: function(result){
-                    console.log(result);
-                    $("#results").val(result.result);
+                    if(result.result == null)
+                        return cb(new Error("Nao foi possivel determinar o resultado"), null);
+
+                    return cb(null, result);
                 }
             });
-        });
-*/
-        $("#personalinsulinsensivity form").submit(function( event ) {
-            event.preventDefault();
+        }
+
+        function personal_sensitivity_insulin(data, cb){
+            $.ajax({
+                dataType: "json",
+                url: "api/personal_sensitivity_insulin",
+                data: data,
+                success: function(result){
+                    if(result.result == null)
+                        return cb(new Error("Nao foi possivel determinar o resultado"), null);
+
+                    return cb(null, result);
+                }
+            });
+        }
+
+        function mealtime_insulin_dose(data, cb){
+            $.ajax({
+                dataType: "json",
+                url: "api/mealtime_insulin_dose",
+                data: data,
+                success: function(result){
+                    if(result.result == null)
+                        return cb(new Error("Nao foi possivel determinar o resultado"), null);
+
+                    return cb(null, result);
+                }
+            });
+        }
+
+
+
+
+
+
+
+
+
+        $('#personalinsulinsensivity form').formValidation({
+            framework: 'bootstrap',
+            icon: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                bodyWeight: {
+                    validators: {
+                        notEmpty: {
+                            message: 'O peso é necessário'
+                        },
+                        numeric: {
+                            message: 'O peso deve ser um valor numérico'
+                        },
+                        between: {
+                            min: 60,
+                            max: 120,
+                            message: 'O peso deve encontrar-se acima de 60kg e abaixo de 120'
+                        }
+                    }
+                },
+
+                bloodSugarDropSamples: {
+                    validators: {
+                        notEmpty: {
+                            message: 'É necessário inserir amostras dos níveis de glicose'
+                        },
+                        regexp: {
+                            regexp: /^(\d,(\s)*)+\d(\s)*$/,
+                            message: 'As amostras devem ser inseridas no formato 123,123,123'
+                        }
+                    }
+                },
+
+                physicalActivitySamples: {
+                    validators: {
+                        notEmpty: {
+                            message: 'É necessário inserir amostras dos níveis de actividade'
+                        },
+                        regexp: {
+                            regexp: /^(\d,(\s)*)+\d(\s)*$/,
+                            message: 'As amostras devem ser inseridas no formato 123,123,123'
+                        }
+                    }
+                }
+
+
+            }
+        }).on('err.field.fv', function(e, data) {
+            if (data.fv.getSubmitButton()) {
+                data.fv.disableSubmitButtons(true);
+            }
+        })
+        .on('success.field.fv', function(e, data) {
+            if (data.fv.getSubmitButton()) {
+                data.fv.disableSubmitButtons(false);
+            }
+
+        }).on('success.validator.fv', function(e, data) {
+            // data.field     --> The field name
+            // data.element   --> The field element
+            // data.result    --> The result returned by the validator
+            // data.validator --> The validator name
 
             var physicalSamples = $("#personalinsulinsensivity input[name=physicalActivitySamples]").val().split(",");
             var bloodSamples = $("#personalinsulinsensivity input[name=bloodSugarDropSamples]").val().split(",");
 
+            if (data.field === 'physicalActivitySamples' || data.field === 'bloodSugarDropSamples' && (physicalSamples.length != bloodSamples.length))
+            {
 
-            $.ajax({
-                dataType: "json",
-                url: "api/personal_sensitivity_insulin",
-                data: {
-                    physicalActivityLevel: $("#personalinsulinsensivity input[name=physicalActivityLevel]").val(),
-                    physicalActivitySamples: physicalSamples,
-                    bloodSugarDropSamples: bloodSamples
-                },
-                success: function(result){
-                    console.log(result);
-                    $("#results").val(result.result);
-                }
-            });
+                $("#personalinsulinsensivity input[name=physicalActivitySamples]").closest(".form-group").removeClass('has-success').addClass('has-error');
+                $("#personalinsulinsensivity input[name=bloodSugarDropSamples]").closest(".form-group").removeClass('has-success').addClass('has-error');
+
+/*
+                // The userName field passes the remote validator
+                data.element                    // Get the field element
+                    .closest('.form-group')     // Get the field parent
+
+                    // Add has-warning class
+                    .removeClass('has-success')
+                    .addClass('has-error')
+
+                    // Show message
+                    .find('small[data-fv-validator="remote"][data-fv-for="physicalActivitySamples"] small[data-fv-validator="remote"][data-fv-for="bloodSugarDropSamples"]')
+                        .show();
+
+                data.element
+                    .closest('.form-group')
+
+                    // Add has-warning class
+                    .removeClass('has-success')
+                    .addClass('has-error')
+
+                    // Show message
+                    .find('small[data-fv-validator="remote"][data-fv-for="bloodSugarDropSamples"]').show();
+                    */
+            }
+            console.log("success");
+
+
+        })
+        // This event will be triggered when the field doesn't pass given validator
+        .on('err.validator.fv', function(e, data) {
+            // We need to remove has-warning class
+            // when the field doesn't pass any validator
+            if (data.field === 'physicalActivitySamples' || data.field === 'bloodSugarDropSamples') {
+                data.element.closest('.form-group').removeClass('has-error');
+            }
+
+            console.log("err")
+
+        }).on('success.form.fv', function(e) {
+            // Prevent form submission
+            e.preventDefault();
+
+            var physicalSamples = $("#personalinsulinsensivity input[name=physicalActivitySamples]").val().split(",");
+            var bloodSamples = $("#personalinsulinsensivity input[name=bloodSugarDropSamples]").val().split(",");
+
+                    var data = {
+                        physicalActivityLevel: $("#personalinsulinsensivity input[name=physicalActivityLevel]").val(),
+                        physicalActivitySamples: physicalSamples,
+                        bloodSugarDropSamples: bloodSamples
+                    };
+
+                    async.retry(3, function(cb, results){
+                        personal_sensitivity_insulin(data, function(err, result){
+                            if(err) {
+                                $("#retrying").show();
+                                cb(err);
+                            }
+                            else
+                                cb(null, result);
+                        });
+                    }, function(err, result) {
+
+                        if(err) {
+                            console.error(err);
+                            $("#failed").show();
+                            $("#retrying").hide();
+                        }
+
+                        if(result) {
+                            console.log(result);
+                            $("#results").val(result.result);
+                            parseDetails(result);
+                            $("#retrying").hide();
+                            $("#failed").hide();
+                        }
+                    });
+
         });
+
+
+
 
         $("#mealtimeinsulindose form").submit(function( event ) {
             event.preventDefault();
