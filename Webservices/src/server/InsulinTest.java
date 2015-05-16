@@ -1,5 +1,5 @@
 package server;
-/*
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ public class InsulinTest {
 
     @Test
     public void testMealtimeInsulinDose() throws Exception {
-        assertEquals(8, insulin.mealtimeInsulinDose(120, 14, 170, 100, 60));
+                assertEquals(8, insulin.mealtimeInsulinDose(120, 14, 170, 100, 60));
         assertEquals(14, insulin.mealtimeInsulinDose(60, 12, 200, 100, 25));
         assertEquals(0, insulin.mealtimeInsulinDose(95, 10, 100, 120, 50));
 
@@ -37,4 +37,3 @@ public class InsulinTest {
         assertEquals(30, insulin.personalSensitivityToInsulin(0, new int[]{1, 3, 10}, new int[]{33, 43, 70}));
     }
 }
-*/

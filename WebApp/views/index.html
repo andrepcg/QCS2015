@@ -37,36 +37,36 @@
 
                 <form class="form-horizontal" style="margin-top: 30px;" role="form">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">Carbohydrate amount</label>
+                        <label class="col-sm-4 control-label">Carbohydrate amount (g)</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="carbohydrateAmount" placeholder="asd">
+                            <input type="text" class="form-control" name="carbohydrateAmount" placeholder="60-120">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">Carbohydrate to insulin ratio</label>
+                        <label class="col-sm-4 control-label">Carbohydrate to insulin ratio (mg/dl)</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="carbohydrateToInsulinRatio" placeholder="dfg">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">Pre meal blood sugar</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" name="preMealBloodSugar" placeholder="ert">
+                            <input type="text" class="form-control" name="carbohydrateToInsulinRatio" placeholder="12">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">Target blood sugar</label>
+                        <label class="col-sm-4 control-label">Pre meal blood sugar (mg/dl)</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="targetBloodSugar" placeholder="targetBloodSugar">
+                            <input type="text" class="form-control" name="preMealBloodSugar" placeholder="100">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">Personal sensitivity</label>
+                        <label class="col-sm-4 control-label">Target blood sugar (mg/dl)</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="personalSensitivity" placeholder="personalSensitivity">
+                            <input type="text" class="form-control" name="targetBloodSugar" placeholder="80-120">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Personal sensitivity (mg/dl)</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="personalSensitivity" placeholder="0-10">
                         </div>
                     </div>
 
@@ -279,16 +279,18 @@
 
             var data = {bodyWeight: $("#backgroundinsulindose input[name=bodyWeight]").val()};
 
-            async.retry(3, function(cb, results){
+            async.retry(4, function(cb, results){
                 background_insulin_dose(data, function(err, result){
                     if(err) {
                         $("#retrying").show();
-                        cb(err);
+                        cb(err, result);
                     }
                     else
                         cb(null, result);
                 });
             }, function(err, result) {
+
+                parseDetails(result);
 
                 if(err) {
                     console.error(err);
@@ -299,7 +301,6 @@
                 if(result) {
                     console.log(result);
                     $("#results").val(result.result);
-                    parseDetails(result);
                     $("#retrying").hide();
                     $("#failed").hide();
                 }
@@ -315,7 +316,7 @@
                 data: data,
                 success: function(result){
                     if(result.result == null)
-                        return cb(new Error("Nao foi possivel determinar o resultado"), null);
+                        return cb(new Error("Nao foi possivel determinar o resultado"), result);
 
                     return cb(null, result);
                 }
@@ -329,7 +330,7 @@
                 data: data,
                 success: function(result){
                     if(result.result == null)
-                        return cb(new Error("Nao foi possivel determinar o resultado"), null);
+                        return cb(new Error("Nao foi possivel determinar o resultado"), result);
 
                     return cb(null, result);
                 }
@@ -343,7 +344,7 @@
                 data: data,
                 success: function(result){
                     if(result.result == null)
-                        return cb(new Error("Nao foi possivel determinar o resultado"), null);
+                        return cb(new Error("Nao foi possivel determinar o resultado"), result);
 
                     return cb(null, result);
                 }
@@ -366,18 +367,18 @@
                 validating: 'glyphicon glyphicon-refresh'
             },
             fields: {
-                bodyWeight: {
+                physicalActivityLevel: {
                     validators: {
                         notEmpty: {
-                            message: 'O peso é necessário'
+                            message: 'Campo necessário'
                         },
                         numeric: {
-                            message: 'O peso deve ser um valor numérico'
+                            message: 'Deve ser um valor numérico'
                         },
                         between: {
-                            min: 60,
-                            max: 120,
-                            message: 'O peso deve encontrar-se acima de 60kg e abaixo de 120'
+                            min: 0,
+                            max: 10,
+                            message: 'O valor deve encontrar-se acima de 0 e abaixo de 10'
                         }
                     }
                 },
@@ -418,59 +419,6 @@
                 data.fv.disableSubmitButtons(false);
             }
 
-        }).on('success.validator.fv', function(e, data) {
-            // data.field     --> The field name
-            // data.element   --> The field element
-            // data.result    --> The result returned by the validator
-            // data.validator --> The validator name
-
-            var physicalSamples = $("#personalinsulinsensivity input[name=physicalActivitySamples]").val().split(",");
-            var bloodSamples = $("#personalinsulinsensivity input[name=bloodSugarDropSamples]").val().split(",");
-
-            if (data.field === 'physicalActivitySamples' || data.field === 'bloodSugarDropSamples' && (physicalSamples.length != bloodSamples.length))
-            {
-
-                $("#personalinsulinsensivity input[name=physicalActivitySamples]").closest(".form-group").removeClass('has-success').addClass('has-error');
-                $("#personalinsulinsensivity input[name=bloodSugarDropSamples]").closest(".form-group").removeClass('has-success').addClass('has-error');
-
-/*
-                // The userName field passes the remote validator
-                data.element                    // Get the field element
-                    .closest('.form-group')     // Get the field parent
-
-                    // Add has-warning class
-                    .removeClass('has-success')
-                    .addClass('has-error')
-
-                    // Show message
-                    .find('small[data-fv-validator="remote"][data-fv-for="physicalActivitySamples"] small[data-fv-validator="remote"][data-fv-for="bloodSugarDropSamples"]')
-                        .show();
-
-                data.element
-                    .closest('.form-group')
-
-                    // Add has-warning class
-                    .removeClass('has-success')
-                    .addClass('has-error')
-
-                    // Show message
-                    .find('small[data-fv-validator="remote"][data-fv-for="bloodSugarDropSamples"]').show();
-                    */
-            }
-            console.log("success");
-
-
-        })
-        // This event will be triggered when the field doesn't pass given validator
-        .on('err.validator.fv', function(e, data) {
-            // We need to remove has-warning class
-            // when the field doesn't pass any validator
-            if (data.field === 'physicalActivitySamples' || data.field === 'bloodSugarDropSamples') {
-                data.element.closest('.form-group').removeClass('has-error');
-            }
-
-            console.log("err")
-
         }).on('success.form.fv', function(e) {
             // Prevent form submission
             e.preventDefault();
@@ -484,7 +432,7 @@
                         bloodSugarDropSamples: bloodSamples
                     };
 
-                    async.retry(3, function(cb, results){
+                    async.retry(4, function(cb, results){
                         personal_sensitivity_insulin(data, function(err, result){
                             if(err) {
                                 $("#retrying").show();
@@ -504,7 +452,6 @@
                         if(result) {
                             console.log(result);
                             $("#results").val(result.result);
-                            parseDetails(result);
                             $("#retrying").hide();
                             $("#failed").hide();
                         }
@@ -515,24 +462,150 @@
 
 
 
-        $("#mealtimeinsulindose form").submit(function( event ) {
-            event.preventDefault();
-            $.ajax({
-                dataType: "json",
-                url: "api/mealtime_insulin_dose",
-                data: {
+
+
+
+        $('#mealtimeinsulindose form').formValidation({
+            framework: 'bootstrap',
+            icon: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                carbohydrateAmount: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Campo necessário'
+                        },
+                        numeric: {
+                            message: 'Deve ser um valor numérico'
+                        },
+                        between: {
+                            min: 60,
+                            max: 120,
+                            message: 'O valor deve encontrar-se acima de 60g e abaixo de 120g'
+                        }
+                    }
+                },
+                carbohydrateToInsulinRatio: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Campo necessário'
+                        },
+                        numeric: {
+                            message: 'Deve ser um valor numérico'
+                        }
+                    }
+                },
+                preMealBloodSugar: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Campo necessário'
+                        },
+                        numeric: {
+                            message: 'Deve ser um valor numérico'
+                        },
+                        between: {
+                            min: 100,
+                            message: 'O valor deve encontrar-se acima de 100'
+                        }
+                    }
+                },
+                targetBloodSugar: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Campo necessário'
+                        },
+                        numeric: {
+                            message: 'Deve ser um valor numérico'
+                        },
+                        between: {
+                            min: 80,
+                            max: 120,
+                            message: 'O valor deve encontrar-se acima de 80g e abaixo de 120g'
+                        }
+                    }
+                },
+                personalSensitivity: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Campo necessário'
+                        },
+                        numeric: {
+                            message: 'Deve ser um valor numérico'
+                        },
+                        between: {
+                            min: 0,
+                            max: 10,
+                            message: 'O valor deve encontrar-se acima de 0 e abaixo de 10'
+                        }
+                    }
+                }
+            }
+        }).on('err.field.fv', function(e, data) {
+            if (data.fv.getSubmitButton()) {
+                data.fv.disableSubmitButtons(true);
+            }
+        })
+        .on('success.field.fv', function(e, data) {
+            if (data.fv.getSubmitButton()) {
+                data.fv.disableSubmitButtons(false);
+            }
+
+        }).on('success.form.fv', function(e) {
+            e.preventDefault();
+
+            var data = {
                     carbohydrateAmount: $("#mealtimeinsulindose input[name=carbohydrateAmount]").val(),
                     carbohydrateToInsulinRatio: $("#mealtimeinsulindose input[name=carbohydrateToInsulinRatio]").val(),
                     preMealBloodSugar: $("#mealtimeinsulindose input[name=preMealBloodSugar]").val(),
                     targetBloodSugar: $("#mealtimeinsulindose input[name=targetBloodSugar]").val(),
                     personalSensitivity: $("#mealtimeinsulindose input[name=personalSensitivity]").val()
-                },
-                success: function(result){
+                };
+
+            async.retry(4, function(cb, results){
+                mealtime_insulin_dose(data, function(err, result){
+                    if(err) {
+                        $("#retrying").show();
+                        cb(err, result);
+                    }
+                    else
+                        cb(null, result);
+                });
+            }, function(err, result) {
+
+                parseDetails(result);
+
+                if(err) {
+                    console.error(err);
+                    $("#failed").show();
+                    $("#retrying").hide();
+                }
+
+                if(result) {
                     console.log(result);
                     $("#results").val(result.result);
+                    $("#retrying").hide();
+                    $("#failed").hide();
                 }
             });
+
+
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
     });
 </script>
 

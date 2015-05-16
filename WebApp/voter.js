@@ -8,7 +8,7 @@ var util = require('util');
 var async = require("async");
 var util = require("util");
 
-var timeout = 3000;
+var timeout = 1000;
 
 var func = function(client, apiMethodName, args, callback){
 
@@ -37,17 +37,92 @@ var func = function(client, apiMethodName, args, callback){
 }
 
 
-var processResults = function(results, callback){
+function Voter(wsdls){
+    this.clients = [];
+
+    var that = this;
+
+    /*
+    *   Create WDSL clients
+     */
+    wsdls.forEach(function(url){
+        soap.createClient(url, function(err, client) {
+            if (err)
+                console.error(url, err);
+            else
+            	that.clients.push(client);
+        });
+    });
+
+    this.callNvoters = function(apiMethodName, params, callback){
+        var funcArray = [];
+
+        that.clients.forEach(function(client){
+            funcArray.push(function(cb){
+                func(client, apiMethodName, params, cb);
+            });
+        });
+
+        async.parallel(funcArray, callback);
+    };
+
+    this.processResults = function(results, callback){
+
+	    var f = {source: results};
+
+	    f.result = this.majorityVoter(results);
+
+	    callback(f);
+	};
+
+}
+
+Voter.prototype.getBackgroundInsulinDose = function(bodyWeight, cb){
+	var that = this;
+    this.callNvoters("backgroundInsulinDose", {arg0: bodyWeight}, function(err, results){
+        //if(err) console.log( err);
+
+        that.processResults(results, function(processed){
+            cb(processed);
+        })
+    });
+
+};
+
+Voter.prototype.getMealtimeInsulinDose = function(carbohydrateAmount, carbohydrateToInsulinRatio, preMealBloodSugar, targetBloodSugar, personalSensitivity, cb){
+    var that = this;
+    this.callNvoters("mealtimeInsulinDose", {arg0: carbohydrateAmount, arg1: carbohydrateToInsulinRatio, arg2: preMealBloodSugar, arg3: targetBloodSugar, arg4: personalSensitivity}, function(err, results){
+        //if(err) console.log( err);
+
+        that.processResults(results, function(processed){
+            cb(processed);
+        })
+    });
+};
+
+Voter.prototype.getPersonalSensitivityToInsulin = function(physicalActivityLevel, physicalActivitySamples, bloodSugarDropSamples, cb){
+    var that = this;
+    this.callNvoters("personalSensitivityToInsulin", {arg0: physicalActivityLevel, arg1: physicalActivitySamples, arg2: bloodSugarDropSamples}, function(err, results){
+        //if(err) console.log( err);
+
+        that.processResults(results, function(processed){
+            cb(processed);
+        })
+    });
+};
+
+Voter.prototype.processResults = function(results, callback){
 
     var f = {source: results};
 
-    f.result = majorityVoter(results);
+    f.result = this.majorityVoter(results);
 
     callback(f);
 };
 
+Voter.prototype.majorityVoter = function(results){
 
-var majorityVoter = function(results){
+	//console.log(results);
     
     /*
     *   Calcula a moda (numero mais frequente)
@@ -70,18 +145,19 @@ var majorityVoter = function(results){
         }
     }
 
-
     // se existirem pelo menos 3 valores identicos entao temos resultado
     if(maxAgreements > 2)
         return res;
 
     // Se nao existirem acordo entre 3 votadores procurar numeros que distam da moda +-1 unidade (erros de arredondamento)
-    if(maxAgreements === 2){
+    if(maxAgreements > 0){
         for(var i in results){
             var valor = results[i].return;
-            if(Math.abs(valor - res) === 1){
-                maxAgreements++;
-            }
+            if(valor !== null){
+	            if(Math.abs(valor - res) === 1){
+	                maxAgreements++;
+	            }
+	        }
         }
     }
 
@@ -91,70 +167,7 @@ var majorityVoter = function(results){
 
 
     return null;
-}
-
-
-function Voter(wsdls){
-    this.clients = [];
-
-    var that = this;
-
-    /*
-    *   Create WDSL clients
-     */
-    wsdls.forEach(function(url){
-        soap.createClient(url, function(err, client) {
-            if (err)
-                console.error(url, err);
-            that.clients.push(client);
-        });
-    });
-
-    this.callNvoters = function(apiMethodName, params, callback){
-        var funcArray = [];
-
-        that.clients.forEach(function(client){
-            funcArray.push(function(cb){
-                func(client, apiMethodName, params, cb);
-            });
-        });
-
-        async.parallel(funcArray, callback);
-    }
-
-}
-
-Voter.prototype.getBackgroundInsulinDose = function(bodyWeight, cb){
-    this.callNvoters("backgroundInsulinDose", {arg0: bodyWeight}, function(err, results){
-        //if(err) console.log( err);
-
-        processResults(results, function(processed){
-            cb(processed);
-        })
-    });
-
 };
-
-Voter.prototype.getMealtimeInsulinDose = function(carbohydrateAmount, carbohydrateToInsulinRatio, preMealBloodSugar, targetBloodSugar, personalSensitivity, cb){
-    this.callNvoters("mealtimeInsulinDose", {arg0: carbohydrateAmount, arg1: carbohydrateToInsulinRatio, arg2: preMealBloodSugar, arg3: targetBloodSugar, arg4: personalSensitivity}, function(err, results){
-        //if(err) console.log( err);
-
-        processResults(results, function(processed){
-            cb(processed);
-        })
-    });
-};
-
-Voter.prototype.getPersonalSensitivityToInsulin = function(physicalActivityLevel, physicalActivitySamples, bloodSugarDropSamples, cb){
-    this.callNvoters("personalSensitivityToInsulin", {arg0: physicalActivityLevel, arg1: physicalActivitySamples, arg2: bloodSugarDropSamples}, function(err, results){
-        //if(err) console.log( err);
-
-        processResults(results, function(processed){
-            cb(processed);
-        })
-    });
-};
-
 
 module.exports = Voter;
 
