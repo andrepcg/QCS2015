@@ -10,28 +10,37 @@ var util = require("util");
 
 var timeout = 1000;
 
-var func = function(client, apiMethodName, args, callback){
+var func = function(client, apiMethodName, args, callback) {
 
 
     var clientURI = client.wsdl.uri;
     var start = Date.now();
-    client[apiMethodName](args, function(err, result) {
 
-        if(result === undefined)
-            result = {return: null};
+    var fFunc = client[apiMethodName];
 
-        result.responseTime = Date.now() - start;
+    if (fFunc != undefined) {
 
-        result.endpoint = clientURI;
+        fFunc(args, function (err, result) {
 
-        if(err) {
-            if(err.code === 'ETIMEDOUT')
-                result.responseTime = 'TIMEOUT';
-            return callback(null, result);
-        }
-        callback(null, result);
+            if (result === undefined)
+                result = {return: null};
 
-    }, {timeout: timeout});
+            result.responseTime = Date.now() - start;
+
+            result.endpoint = clientURI;
+
+            if (err) {
+                if (err.code === 'ETIMEDOUT')
+                    result.responseTime = 'TIMEOUT';
+                return callback(null, result);
+            }
+            callback(null, result);
+
+        }, {timeout: timeout});
+    }
+    else{
+        console.error(clientURI);
+    }
 
 
 }
@@ -137,7 +146,7 @@ Voter.prototype.majorityVoter = function(results){
     *   ignora o valor do proprio numero, tratando-o como uma string. a compara�ao � feita com base na igualdade dos caracteres
     */
     var freqs = {};
-    var maxAgreements = 0;
+    var maxAgreements = 2;
     var res;
     var modas = [];
 
@@ -147,20 +156,24 @@ Voter.prototype.majorityVoter = function(results){
         if(ret.return != null){
 
             freqs[ret.return] = (freqs[ret.return] || 0) + 1;
+
             if(freqs[ret.return] >= maxAgreements){
                 maxAgreements = freqs[ret.return];
                 res = ret.return;
-                modas.push(ret.return);
+                if(modas.indexOf(ret.return) == -1)
+                	modas.push(ret.return);
             }
         }
     }
-    //console.log(modas.length, res);
+
+    modas.sort();
+
     // se existirem pelo menos 3 valores identicos entao temos resultado
     if(modas.length === 1 && maxAgreements > 2)
         return res;
     else if(modas.length > 1 && maxAgreements > 2){
-        var min = Math.min.apply(null, modas);
-        return min;
+        //var min = Math.min.apply(null, modas);
+        return modas[0];
     }
 
     // Se nao existir acordo entre 3 votadores procurar numeros que distam da moda +-1 unidade (erros de arredondamento)
@@ -170,15 +183,16 @@ Voter.prototype.majorityVoter = function(results){
         for(z in modas){
             var curAgrees = maxAgreements;
             var moda = modas[z];
+
             for(var i in results){
                 var valor = results[i].return;
                 if(valor != null){
-                    //console.log(valor, moda);
                     if(Math.abs(valor - moda) === 1)
                         curAgrees++;
                     
                 }
             }
+
             if(curAgrees > 2)
                 return moda;
         }

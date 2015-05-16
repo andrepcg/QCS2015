@@ -1,7 +1,20 @@
 var express = require('express');
 var router = express.Router();
 
-var wsdl_sources = ["http://localhost:8080/insulin/?wsdl",'http://qcs19.dei.uc.pt/InsulinDoseCalculator/WebService?wsdl', 'http://qcs12.dei.uc.pt:8080/insulin?wsdl', 'http://qcs18.dei.uc.pt:8080/insulin?wsdl', "http://liis-lab.dei.uc.pt:8080/Server?wsdl", 'http://qcs11.dei.uc.pt:8080/insulin/?wsdl'];
+var wsdl_sources = ["http://liis-lab.dei.uc.pt:8080/Server?wsdl",
+    "http://qcs01.dei.uc.pt:8080/InsulinDoseCalculator?wsdl",
+    "http://qcs02.dei.uc.pt:8080/insulinDosage?wsdl",
+    "http://qcs04.dei.uc.pt:8080/InsulinDoseCalculator?wsdl",
+    "http://qcs05.dei.uc.pt:8080/insulin?wsdl",
+    "http://qcs06.dei.uc.pt:8080/insulin?wsdl",
+    "http://qcs07.dei.uc.pt:8080/insulin?wsdl",
+    "http://qcs08.dei.uc.pt:8080/InsulinDoseCalculator?wsdl",
+    "http://qcs09.dei.uc.pt:8080/Insulin?wsdl",
+    "http://qcs10.dei.uc.pt:8080/InsulinDoseCalculator?wsdl",
+    "http://qcs11.dei.uc.pt:8080/insulin/?wsdl",
+    "http://qcs12.dei.uc.pt:8080/insulin?wsdl",
+    "http://qcs13.dei.uc.pt:8080/insulin?wsdl",
+    "http://qcs18.dei.uc.pt:8080/insulin?wsdl"];
 //var wsdl_sources = ["http://liis-lab.dei.uc.pt:8080/Server?wsdl"];
 var soap = require("../voter");
 var NVoter = new soap(wsdl_sources);

@@ -88,7 +88,7 @@ describe('Voter', function() {
 				{return: 5},
 				{return: 5},
 			]);
-			assert.equal(actual, 6);
+			assert.equal(actual, 5);
 
 			actual = NVoter.majorityVoter([
 				{return: 5},
@@ -117,6 +117,15 @@ describe('Voter', function() {
 				{return: 19},
 			]);
 			assert.equal(actual, 18);
+
+			actual = NVoter.majorityVoter([
+				{return: 22},
+				{return: 0},
+				{return: 22},
+				{return: 22},
+			]);
+			assert.equal(actual, 22);
+
 			
 			done();
 
