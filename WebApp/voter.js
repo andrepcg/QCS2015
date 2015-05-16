@@ -120,6 +120,14 @@ Voter.prototype.processResults = function(results, callback){
     callback(f);
 };
 
+Array.prototype.max = function() {
+  return Math.max.apply(null, this);
+};
+
+Array.prototype.min = function() {
+  return Math.min.apply(null, this);
+};
+
 Voter.prototype.majorityVoter = function(results){
 
 	//console.log(results);
@@ -131,38 +139,51 @@ Voter.prototype.majorityVoter = function(results){
     var freqs = {};
     var maxAgreements = 0;
     var res;
+    var modas = [];
 
 
     for(var ret in results){
         var ret = results[ret];
-        if(ret.return !== null){
+        if(ret.return != null){
 
             freqs[ret.return] = (freqs[ret.return] || 0) + 1;
-            if(freqs[ret.return] > maxAgreements){
+            if(freqs[ret.return] >= maxAgreements){
                 maxAgreements = freqs[ret.return];
                 res = ret.return;
+                modas.push(ret.return);
             }
         }
     }
-
+    //console.log(modas.length, res);
     // se existirem pelo menos 3 valores identicos entao temos resultado
-    if(maxAgreements > 2)
+    if(modas.length === 1 && maxAgreements > 2)
         return res;
-
-    // Se nao existirem acordo entre 3 votadores procurar numeros que distam da moda +-1 unidade (erros de arredondamento)
-    if(maxAgreements > 0){
-        for(var i in results){
-            var valor = results[i].return;
-            if(valor !== null){
-	            if(Math.abs(valor - res) === 1){
-	                maxAgreements++;
-	            }
-	        }
-        }
+    else if(modas.length > 1 && maxAgreements > 2){
+        var min = Math.min.apply(null, modas);
+        return min;
     }
 
-    if(maxAgreements > 2)
-        return res;
+    // Se nao existir acordo entre 3 votadores procurar numeros que distam da moda +-1 unidade (erros de arredondamento)
+    // moda = existir pelo menos 2 concordancias
+    if(maxAgreements === 2){
+
+        for(z in modas){
+            var curAgrees = maxAgreements;
+            var moda = modas[z];
+            for(var i in results){
+                var valor = results[i].return;
+                if(valor != null){
+                    //console.log(valor, moda);
+                    if(Math.abs(valor - moda) === 1)
+                        curAgrees++;
+                    
+                }
+            }
+            if(curAgrees > 2)
+                return moda;
+        }
+        
+    }
 
 
 
