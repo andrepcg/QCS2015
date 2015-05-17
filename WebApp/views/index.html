@@ -220,11 +220,19 @@
 
         for(var i = 0; i < data.source.length; i++){
             var endpoint = data.source[i];
-            //$("#xml").append("Source: " + endpoint.endpoint + "\n");
-            //$("#xml").append("Response time: " + endpoint.responseTime + "\n");
-            //$("#xml").append("Result: " + endpoint.return + "\n\n");
+            var res = (endpoint.responseTime == "TIMEOUT" ? "TIMEOUT" : endpoint.return);
+            var colunaSource = '<td>'+ endpoint.endpoint +'</td>';
+            var colunaResponseTime = '<td>'+ endpoint.responseTime +'</td>';
+            var cssclass = "";
+            if(res == data.result)
+                cssclass = "success";
+            else if(Math.abs(res - data.result) === 1)
+                cssclass = "warning";
+            else if(endpoint.responseTime == "TIMEOUT")
+                cssclass = "danger";
 
-            $('#tabelaResultados > tbody:last').append('<tr><td>'+ endpoint.endpoint +'</td><td>'+ endpoint.responseTime +'</td><td>'+ endpoint.return +'</td></tr>');
+            var colunaResult = '<td class="'+cssclass+'" >'+ res +'</td>';
+            $('#tabelaResultados > tbody:last').append('<tr>' + colunaSource + colunaResponseTime + colunaResult + '</tr>');
         }
     };
 

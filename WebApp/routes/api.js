@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-var wsdl_sources = ["http://liis-lab.dei.uc.pt:8080/Server?wsdl",
+var wsdl_sources = ["http://localhost:8080/insulin/?wsdl",
+    "http://liis-lab.dei.uc.pt:8080/Server?wsdl",
     "http://qcs01.dei.uc.pt:8080/InsulinDoseCalculator?wsdl",
     "http://qcs02.dei.uc.pt:8080/insulinDosage?wsdl",
     "http://qcs04.dei.uc.pt:8080/InsulinDoseCalculator?wsdl",
