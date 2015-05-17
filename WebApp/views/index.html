@@ -645,13 +645,13 @@
                 parseDetails(result);
 
                 if(err) {
+                    $("#results").val("");
                     $("#failed").show();
                     $("#retrying").hide();
                     console.error(err);
                 }
 
                 if(result) {
-                    $("#results").val("");
                     $("#retrying").hide();
                     $("#failed").hide();
                 }
