@@ -18,11 +18,13 @@ var func = function(client, apiMethodName, args, callback) {
 
     var fFunc = client[apiMethodName];
 
-    if (fFunc != undefined) {
+    //console.log(args);
+
+    if (fFunc != "undefined") {
 
         fFunc(args, function (err, result) {
 
-            if (result === undefined)
+            if (result === undefined || result["_readableState"] != null)
                 result = {return: null};
 
             result.responseTime = Date.now() - start;
@@ -139,7 +141,7 @@ Array.prototype.min = function() {
 
 Voter.prototype.majorityVoter = function(results){
 
-	//console.log(results);
+	console.log(results);
     
     /*
     *   Calcula a moda (numero mais frequente)
@@ -158,16 +160,21 @@ Voter.prototype.majorityVoter = function(results){
             freqs[ret.return] = (freqs[ret.return] || 0) + 1;
 
             if(freqs[ret.return] >= maxAgreements){
+
+                if(freqs[ret.return] > maxAgreements)
+                    modas.splice(modas.indexOf(res), 1);
+
                 maxAgreements = freqs[ret.return];
                 res = ret.return;
                 if(modas.indexOf(ret.return) == -1)
                 	modas.push(ret.return);
+                
             }
         }
     }
 
     modas.sort();
-
+    //console.log(modas)
     // se existirem pelo menos 3 valores identicos entao temos resultado
     if(modas.length === 1 && maxAgreements > 2)
         return res;

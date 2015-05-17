@@ -236,6 +236,9 @@
         }
     };
 
+    var physicalSamples = 0;
+    var bloodSamples = 0;
+
 
     $( document ).ready(function() {
 
@@ -248,6 +251,49 @@
         }).bind("ajaxComplete", function(){
             $("#waitingresponse").hide();
         });
+
+
+        $("[name=physicalActivitySamples]").keyup(function(){
+            var t = $("[name=physicalActivitySamples]").val();
+
+            if(t.match(/(\d+\s*,\s*)+\d+\s*/) && t.match(/(\d+\s*,\s*)+\d+\s*/).length > 0){
+                var numeros = t.split(",");
+                physicalSamples = numeros.length - (numeros[numeros.length - 1] == "" ? 1 : 0);
+                if(physicalSamples > 10)
+                    $("#personalinsulinsensivity form button").attr("disabled", true);
+                else{
+                    if(bloodSamples === physicalSamples){
+                        $("#personalinsulinsensivity form button").attr("disabled", false);
+
+                    }
+                    else{
+                        $("#personalinsulinsensivity form button").attr("disabled", true);
+                    }
+                }
+            }
+        });
+
+        $("[name=bloodSugarDropSamples]").keyup(function(){
+            var t = $("[name=bloodSugarDropSamples]").val();
+
+            if(t.match(/(\d+\s*,\s*)+\d+\s*/) && t.match(/(\d+\s*,\s*)+\d+\s*/).length > 0){
+                var numeros = t.split(",");
+                bloodSamples = numeros.length - (numeros[numeros.length - 1] == "" ? 1 : 0);
+                if(bloodSamples > 10)
+                    $("#personalinsulinsensivity form button").attr("disabled", true);
+                else{
+                    if(bloodSamples === physicalSamples){
+                        $("#personalinsulinsensivity form button").attr("disabled", false);
+
+                    }
+                    else{
+                        $("#personalinsulinsensivity form button").attr("disabled", true);
+                    }
+
+                }
+            }
+        });
+
 
         $('#backgroundinsulindose form').formValidation({
             framework: 'bootstrap',
@@ -404,7 +450,7 @@
                             message: 'É necessário inserir amostras dos níveis de glicose'
                         },
                         regexp: {
-                            regexp: /^(\d,(\s)*)+\d(\s)*$/,
+                            regexp: /(\d+\s*,\s*)+\d+\s*/,
                             message: 'As amostras devem ser inseridas no formato 123,123,123'
                         }
                     }
@@ -416,7 +462,7 @@
                             message: 'É necessário inserir amostras dos níveis de actividade'
                         },
                         regexp: {
-                            regexp: /^(\d,(\s)*)+\d(\s)*$/,
+                            regexp: /(\d+\s*,\s*)+\d+\s*/,
                             message: 'As amostras devem ser inseridas no formato 123,123,123'
                         }
                     }
@@ -441,6 +487,15 @@
             var physicalSamples = $("#personalinsulinsensivity input[name=physicalActivitySamples]").val().split(",");
             var bloodSamples = $("#personalinsulinsensivity input[name=bloodSugarDropSamples]").val().split(",");
 
+
+            if(physicalSamples[physicalSamples.length - 1] == "")
+                //physicalSamples.splice(physicalSamples.length-1,physicalSamples.length);
+                physicalSamples.pop();
+
+            if(bloodSamples[bloodSamples.length - 1] == "")
+                //bloodSamples.splice(bloodSamples.length-1,bloodSamples.length);
+                bloodSamples.pop();
+
                     var data = {
                         physicalActivityLevel: $("#personalinsulinsensivity input[name=physicalActivityLevel]").val(),
                         physicalActivitySamples: physicalSamples,
@@ -457,6 +512,8 @@
                                 cb(null, result);
                         });
                     }, function(err, result) {
+
+                        parseDetails(result);
 
                         if(err) {
                             $("#failed").show();

@@ -50,6 +50,10 @@ router.get('/personal_sensitivity_insulin', function(req, res, next) {
     var a1 = req.query.physicalActivityLevel;
     var a2 = req.query.physicalActivitySamples;
     var a3 = req.query.bloodSugarDropSamples;
+    
+    a1 = parseInt(a1);
+    a2 = a2.map(Number);
+    a3 = a3.map(Number);
 
 
     NVoter.getPersonalSensitivityToInsulin(a1, a2, a3, function(r){
