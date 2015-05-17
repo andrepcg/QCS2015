@@ -141,7 +141,7 @@ Array.prototype.min = function() {
 
 Voter.prototype.majorityVoter = function(results){
 
-	console.log(results);
+	//console.log(results);
     
     /*
     *   Calcula a moda (numero mais frequente)

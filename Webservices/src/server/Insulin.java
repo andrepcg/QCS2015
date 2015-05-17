@@ -43,7 +43,7 @@ public class Insulin implements InsulinDoseCalculator {
      */
     public int backgroundInsulinDose(int bodyWeight) {
         try {
-            Thread.sleep(3500);
+            //Thread.sleep(3500);
             return (int)Math.ceil((bodyWeight * 0.55) / 2);
         }catch (Exception e){
             return -1;

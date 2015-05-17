@@ -217,6 +217,7 @@
 
         $('#tabelaResultados > tbody:last tr').remove();
         
+        $("#results").val(data.result);
 
         for(var i = 0; i < data.source.length; i++){
             var endpoint = data.source[i];
@@ -228,7 +229,7 @@
                 cssclass = "success";
             else if(Math.abs(res - data.result) === 1)
                 cssclass = "warning";
-            else if(endpoint.responseTime == "TIMEOUT")
+            else if(endpoint.responseTime == "TIMEOUT" || endpoint.result == null || Math.abs(res - data.result) > 1)
                 cssclass = "danger";
 
             var colunaResult = '<td class="'+cssclass+'" >'+ res +'</td>';
@@ -348,14 +349,13 @@
                 parseDetails(result);
 
                 if(err) {
+                    $("#results").val("");
                     $("#failed").show();
                     $("#retrying").hide();
                     console.error(err);
                 }
 
                 if(result) {
-                    console.log(result);
-                    $("#results").val(result.result);
                     $("#retrying").hide();
                     $("#failed").hide();
                 }
@@ -516,14 +516,13 @@
                         parseDetails(result);
 
                         if(err) {
+                            $("#results").val("");
                             $("#failed").show();
                             $("#retrying").hide();
                             console.error(err);
                         }
 
                         if(result) {
-                            console.log(result);
-                            $("#results").val(result.result);
                             $("#retrying").hide();
                             $("#failed").hide();
                         }
@@ -646,15 +645,13 @@
                 parseDetails(result);
 
                 if(err) {
-                    
                     $("#failed").show();
                     $("#retrying").hide();
                     console.error(err);
                 }
 
                 if(result) {
-                    console.log(result);
-                    $("#results").val(result.result);
+                    $("#results").val("");
                     $("#retrying").hide();
                     $("#failed").hide();
                 }
