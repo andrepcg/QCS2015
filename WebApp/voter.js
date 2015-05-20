@@ -155,43 +155,30 @@ Voter.prototype.majorityVoter = function(results){
 
     for(var ret in results){
         var ret = results[ret];
-        if(ret.return != null){
+        var valor = ret.return;
+        if(valor != null){
+            freqs[valor] = (freqs[valor] || 0) + 1;
 
-            freqs[ret.return] = (freqs[ret.return] || 0) + 1;
+            if(freqs[valor] >= maxAgreements){
 
-            if(freqs[ret.return] >= maxAgreements){
+                if(freqs[valor] > maxAgreements)
+                    modas = [];
 
-                if(freqs[ret.return] > maxAgreements)
-                    modas.splice(modas.indexOf(res), 1);
-
-                maxAgreements = freqs[ret.return];
-                res = ret.return;
-                if(modas.indexOf(ret.return) == -1)
-                	modas.push(ret.return);
+                maxAgreements = freqs[valor];
+                res = valor;
+                if(modas.indexOf(valor) === -1)
+                	modas.push(valor);
                 
             }
         }
     }
 
-    console.log(maxAgreements, res, freqs, modas)
-
     modas.sort();
-    //console.log(modas)
+
     // se existirem pelo menos 3 valores identicos entao temos resultado
     if(modas.length === 1 && maxAgreements > 2)
         return res;
     else if(modas.length > 1 && maxAgreements > 2){
-
-/*
-        var c = 0;
-        for(key in freqs){
-        	if(freqs[key] == maxAgreements)
-        		c++;
-        }
-
-        if(c === 0)
-        	return res;
-*/
 
         return modas[0];
     }
