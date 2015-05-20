@@ -178,10 +178,9 @@ Voter.prototype.majorityVoter = function(results){
     // se existirem pelo menos 3 valores identicos entao temos resultado
     if(modas.length === 1 && maxAgreements > 2)
         return res;
-    else if(modas.length > 1 && maxAgreements > 2){
-
+    else if(modas.length > 1 && maxAgreements > 2)
         return modas[0];
-    }
+
 
     // Se nao existir acordo entre 3 votadores procurar numeros que distam da moda +-1 unidade (erros de arredondamento)
     // moda = existir pelo menos 2 concordancias
