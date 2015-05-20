@@ -173,13 +173,26 @@ Voter.prototype.majorityVoter = function(results){
         }
     }
 
+    console.log(maxAgreements, res, freqs, modas)
+
     modas.sort();
     //console.log(modas)
     // se existirem pelo menos 3 valores identicos entao temos resultado
     if(modas.length === 1 && maxAgreements > 2)
         return res;
     else if(modas.length > 1 && maxAgreements > 2){
-        //var min = Math.min.apply(null, modas);
+
+/*
+        var c = 0;
+        for(key in freqs){
+        	if(freqs[key] == maxAgreements)
+        		c++;
+        }
+
+        if(c === 0)
+        	return res;
+*/
+
         return modas[0];
     }
 

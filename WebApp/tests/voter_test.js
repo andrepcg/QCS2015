@@ -65,7 +65,7 @@ describe('Voter', function() {
 		});
 
 		it('should return a value when able to provide a majority result', function(done) {
-
+/*
 			var actual = NVoter.majorityVoter([
 				{return: 3},
 				{return: 3},
@@ -138,6 +138,23 @@ describe('Voter', function() {
 				{return: 5},
 			]);
 			assert.equal(actual, 5);
+*/
+			actual = NVoter.majorityVoter([
+				{return: -1},
+				{return: 0},
+				{return: 1},
+				{return: 1},
+				{return: -1},
+				{return: 0},
+				{return: 0},
+				{return: 1},
+				{return: 0},
+				{return: 0},
+				{return: 0},
+				{return: -1},
+				{return: 1},
+			]);
+			assert.equal(actual, 0);
 
 			
 			done();
