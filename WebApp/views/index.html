@@ -214,6 +214,7 @@
     var parseDetails = function(data){
         // data.result -> resultado final
         // data.source -> lista
+        console.log(data)
 
         $('#tabelaResultados > tbody:last tr').remove();
         
@@ -227,10 +228,10 @@
             var cssclass = "";
             if(res == data.result)
                 cssclass = "success";
+            else if(endpoint.responseTime == "TIMEOUT" || res == null || res === -1 || Math.abs(res - data.result) > 1)
+                cssclass = "danger";
             else if(Math.abs(res - data.result) === 1)
                 cssclass = "warning";
-            else if(endpoint.responseTime == "TIMEOUT" || endpoint.result == null || Math.abs(res - data.result) > 1)
-                cssclass = "danger";
 
             var colunaResult = '<td class="'+cssclass+'" >'+ res +'</td>';
             $('#tabelaResultados > tbody:last').append('<tr>' + colunaSource + colunaResponseTime + colunaResult + '</tr>');

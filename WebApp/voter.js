@@ -156,7 +156,7 @@ Voter.prototype.majorityVoter = function(results){
     for(var ret in results){
         var ret = results[ret];
         var valor = ret.return;
-        if(valor != null){
+        if(valor != null && valor !== -1){
             freqs[valor] = (freqs[valor] || 0) + 1;
 
             if(freqs[valor] >= maxAgreements){
@@ -174,34 +174,46 @@ Voter.prototype.majorityVoter = function(results){
     }
 
     modas.sort();
+    //console.log(modas)
 
     // se existirem pelo menos 3 valores identicos entao temos resultado
     if(modas.length === 1 && maxAgreements > 2)
         return res;
-    else if(modas.length > 1 && maxAgreements > 2)
-        return modas[0];
+    //else if(modas.length > 1 && maxAgreements > 2)
+    //    return modas[0];
+
 
 
     // Se nao existir acordo entre 3 votadores procurar numeros que distam da moda +-1 unidade (erros de arredondamento)
     // moda = existir pelo menos 2 concordancias
-    if(maxAgreements === 2){
+    if(maxAgreements > 1 && modas.length > 1){
 
-        for(z in modas){
+        var maxG = maxAgreements;
+        var finalR = 999999;
+
+        for(var z in modas){
             var curAgrees = maxAgreements;
             var moda = modas[z];
 
             for(var i in results){
                 var valor = results[i].return;
-                if(valor != null){
+                if(valor != null && valor != -1){
                     if(Math.abs(valor - moda) === 1)
                         curAgrees++;
                     
                 }
             }
 
-            if(curAgrees > 2)
-                return moda;
+            if(curAgrees > maxG){
+                if(moda < finalR)
+                    finalR = moda;
+                maxG = curAgrees;
+            }
+
         }
+
+        if(maxG > 2)
+            return finalR;
         
     }
 

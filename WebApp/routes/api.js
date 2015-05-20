@@ -21,6 +21,13 @@ var wsdl_sources = [
 var soap = require("../voter");
 var NVoter = new soap(wsdl_sources);
 
+NVoter.majorityVoter([
+    {return: 5},
+    {return: 2},
+    {return: 7},
+    {return: 4},
+]);
+
 
 router.get('/mealtime_insulin_dose', function(req, res, next) {
 
