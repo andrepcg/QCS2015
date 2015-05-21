@@ -182,14 +182,12 @@ Voter.prototype.majorityVoter = function(results){
     //else if(modas.length > 1 && maxAgreements > 2)
     //    return modas[0];
 
-
-
     // Se nao existir acordo entre 3 votadores procurar numeros que distam da moda +-1 unidade (erros de arredondamento)
     // moda = existir pelo menos 2 concordancias
     if(maxAgreements > 1 && modas.length > 1){
 
         var maxG = maxAgreements;
-        var finalR = 999999;
+        var finalR = modas[0];
 
         for(var z in modas){
             var curAgrees = maxAgreements;

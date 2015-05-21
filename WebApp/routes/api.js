@@ -21,15 +21,10 @@ var wsdl_sources = [
 var soap = require("../voter");
 var NVoter = new soap(wsdl_sources);
 
-NVoter.majorityVoter([
-    {return: 5},
-    {return: 2},
-    {return: 7},
-    {return: 4},
-]);
-
 
 router.get('/mealtime_insulin_dose', function(req, res, next) {
+
+    var session = req.session;
 
     var a1 = req.query.carbohydrateAmount;
     var a2 = req.query.carbohydrateToInsulinRatio;
@@ -37,9 +32,31 @@ router.get('/mealtime_insulin_dose', function(req, res, next) {
     var a4 = req.query.targetBloodSugar;
     var a5 = req.query.personalSensitivity;
 
-    NVoter.getMealtimeInsulinDose(a1, a2, a3, a4, a5, function(r){
-        res.json(r);
+    var a6 = req.query.physicalActivitySamples;
+    var a7 = req.query.bloodSugarDropSamples;
+    var a8 = req.query.physicalActivityLevel;
+
+    if(session.physicalActivitySamples == undefined)
+        session.physicalActivitySamples = [a6];
+    else
+        session.physicalActivitySamples.push(a6);
+
+    if(session.bloodSugarDropSamples == undefined)
+        session.bloodSugarDropSamples = [a7];
+    else
+        session.bloodSugarDropSamples.push(a7);
+
+    console.log(session.physicalActivitySamples);
+
+    NVoter.getPersonalSensitivityToInsulin(a8, session.physicalActivitySamples, session.bloodSugarDropSamples, function(personalSensitivity){
+        //res.json(r);
+
+        NVoter.getMealtimeInsulinDose(a1, a2, a3, a4, personalSensitivity, function(r){
+            res.json(r);
+        }); 
     });
+
+    
 
 });
 
